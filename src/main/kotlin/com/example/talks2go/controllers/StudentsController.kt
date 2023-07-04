@@ -29,14 +29,15 @@ class StudentsController constructor(
 
         studentRepository.findById(loginRequest.studentEmail)
             .let {
-                val student: Student = it.get();
 
-                if (it.isPresent && student.password == loginRequest.password) {
+                if (it.isPresent && it.get().password == loginRequest.password) {
+                    val student: Student = it.get();
+
                     return ResponseEntity(
                         DataResponse(student, status.value()),
                         status
                     );
-                } else if (student.password != loginRequest.password) {
+                } else if (it.isPresent && it.get().password != loginRequest.password) {
                     status = HttpStatus.UNAUTHORIZED;
 
                     return ResponseEntity(
