@@ -116,4 +116,36 @@ class ChatsController constructor(
             status
         );
     }
+    @PostMapping(
+        value = ["/message/history"],
+        consumes = ["application/json"],
+        produces = ["application/json"]
+    )
+    @ResponseBody
+    @Throws(Exception::class)
+    fun listStudentMessageHistory(@RequestBody studentEmail: String): ResponseEntity<Any> {
+        var status: HttpStatus = HttpStatus.OK;
+
+        var messageHistory: List<Message>? = null;
+        val messageHistoryThread = Thread {
+            messageHistory = messageRepository.getStudentHistoryMessages(studentEmail);
+        }
+
+        messageHistoryThread.start();
+        messageHistoryThread.join();
+
+        if (messageHistory == null) {
+            status = HttpStatus.INTERNAL_SERVER_ERROR;
+
+            return ResponseEntity(
+                MessageResponse("Something went wrong with retrieving chat history messages", status.value()),
+                status
+            );
+        }
+
+        return ResponseEntity(
+            DataResponse(messageHistory!!, status.value()),
+            status
+        );
+    }
 }
