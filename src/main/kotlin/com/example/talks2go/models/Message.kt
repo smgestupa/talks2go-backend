@@ -36,5 +36,5 @@ data class Message constructor(
                 nullable=false
         )
         @CreationTimestamp
-        val createdAt: LocalDateTime,
+        val createdAt: LocalDateTime = LocalDateTime.now(),
 )
