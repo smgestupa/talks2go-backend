@@ -2,6 +2,7 @@ package com.example.talks2go.controllers
 
 import com.example.talks2go.models.Student
 import com.example.talks2go.payloads.requests.LoginRequest
+import com.example.talks2go.payloads.requests.LogoutRequest
 import com.example.talks2go.payloads.responses.DataResponse
 import com.example.talks2go.payloads.responses.MessageResponse
 import com.example.talks2go.repositories.StudentRepository
@@ -32,6 +33,7 @@ class StudentsController constructor(
 
                 if (it.isPresent && it.get().password == loginRequest.password) {
                     val student: Student = it.get();
+                    studentRepository.insertStudentAsLoggedIn(student.studentEmail);
 
                     return ResponseEntity(
                         DataResponse(student, status.value()),
@@ -51,8 +53,44 @@ class StudentsController constructor(
             Student(loginRequest.studentEmail, loginRequest.password)
         );
 
+        studentRepository.insertStudentAsLoggedIn(newStudent.studentEmail);
+
         return ResponseEntity(
             DataResponse(newStudent, status.value()),
+            status
+        );
+    }
+
+    @PostMapping(
+            value = ["/logout"],
+            consumes = ["application/json"],
+            produces = ["application/json"]
+    )
+    @ResponseBody
+    @Throws(Exception::class)
+    fun logoutStudent(@RequestBody logoutRequest: LogoutRequest): ResponseEntity<Any> {
+        var status: HttpStatus = HttpStatus.OK;
+
+        studentRepository.deleteStudentAsLoggedIn(logoutRequest.studentEmail);
+
+        return ResponseEntity(
+            MessageResponse("Student successfully logged out", status.value()),
+            status
+        );
+    }
+
+    @GetMapping(
+            value = ["/logged/list"],
+            produces = ["application/json"]
+    )
+    @Throws(Exception::class)
+    fun getStudentsLoggedIn(): ResponseEntity<Any> {
+        var status: HttpStatus = HttpStatus.OK;
+
+        val loggedInStudents: List<String> = studentRepository.selectedLoggedInStudents();
+
+        return ResponseEntity(
+            DataResponse(loggedInStudents, status.value()),
             status
         );
     }
