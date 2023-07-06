@@ -3,6 +3,7 @@ package com.example.talks2go.controllers
 import com.example.talks2go.models.Chatroom
 import com.example.talks2go.models.Message
 import com.example.talks2go.models.Student
+import com.example.talks2go.payloads.requests.ChatroomIDRequest
 import com.example.talks2go.payloads.requests.ChatroomRequest
 import com.example.talks2go.payloads.requests.LoginRequest
 import com.example.talks2go.payloads.requests.MessageRequest
@@ -71,12 +72,12 @@ class ChatsController constructor(
     )
     @ResponseBody
     @Throws(Exception::class)
-    fun listChatroomMessages(@RequestBody chatroomID: Int): ResponseEntity<Any> {
+    fun listChatroomMessages(@RequestBody chatroomIDRequest: ChatroomIDRequest): ResponseEntity<Any> {
         var status: HttpStatus = HttpStatus.OK;
 
         var chatroomMessages: List<Message>? = null;
         val chatroomMessagesThread = Thread {
-            chatroomMessages = messageRepository.getChatroomMessages(chatroomID);
+            chatroomMessages = messageRepository.getChatroomMessages(chatroomIDRequest.chatroomID);
         };
 
         chatroomMessagesThread.start();
