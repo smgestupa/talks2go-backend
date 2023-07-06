@@ -4,6 +4,7 @@ import com.example.talks2go.models.Chatroom
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
 import org.springframework.data.repository.query.Param
+import java.util.*
 
 interface ChatroomRepository : JpaRepository<Chatroom, Int> {
 
@@ -14,5 +15,5 @@ interface ChatroomRepository : JpaRepository<Chatroom, Int> {
     fun getChatroomID(
         @Param("firstStudentEmail") firstStudentEmail: String,
         @Param("secondStudentEmail") secondStudentEmail: String
-    ): Int
+    ): Optional<Int>
 }
