@@ -13,6 +13,7 @@ import com.example.talks2go.repositories.MessageRepository
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
+import java.util.*
 
 @CrossOrigin(origins=["*"], maxAge=3600)
 @RestController
@@ -33,10 +34,12 @@ class ChatsController constructor(
 
         var chatroomID: Int? = null;
         val chatroomIDThread = Thread {
-            chatroomID = chatroomRepository.getChatroomID(
+            val chatroom: Optional<Int> = chatroomRepository.getChatroomID(
                 chatroomRequest.firstStudentEmail,
-                chatroomRequest.secondStudentEmail
-            );
+                chatroomRequest.secondStudentEmail);
+
+            if (chatroom.isPresent)
+                chatroomID = chatroom.get();
         };
 
         chatroomIDThread.start();
