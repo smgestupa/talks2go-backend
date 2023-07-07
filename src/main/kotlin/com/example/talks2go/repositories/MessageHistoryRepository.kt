@@ -16,7 +16,7 @@ interface MessageHistoryRepository : JpaRepository<MessageHistory, Int> {
                 "FROM message m\n" +
                 "LEFT JOIN chatroom c\n" +
                 "ON (m.student_email = c.first_student_email OR m.student_email = c.second_student_email)\n" +
-                "WHERE m.student_email = :studentEmail\n" +
+                "WHERE m.student_email = :studentEmail AND m.room_id = c.room_id\n" +
                 "ORDER BY m.created_at ASC",
         nativeQuery = true
     )
