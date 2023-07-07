@@ -2,14 +2,12 @@ package com.example.talks2go.controllers
 
 import com.example.talks2go.models.Chatroom
 import com.example.talks2go.models.Message
-import com.example.talks2go.models.Student
-import com.example.talks2go.payloads.requests.ChatroomIDRequest
-import com.example.talks2go.payloads.requests.ChatroomRequest
-import com.example.talks2go.payloads.requests.LoginRequest
-import com.example.talks2go.payloads.requests.MessageRequest
+import com.example.talks2go.models.MessageHistory
+import com.example.talks2go.payloads.requests.*
 import com.example.talks2go.payloads.responses.DataResponse
 import com.example.talks2go.payloads.responses.MessageResponse
 import com.example.talks2go.repositories.ChatroomRepository
+import com.example.talks2go.repositories.MessageHistoryRepository
 import com.example.talks2go.repositories.MessageRepository
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
@@ -21,6 +19,7 @@ import java.util.*
 @RequestMapping("/api/v1/chats")
 class ChatsController constructor(
     val messageRepository: MessageRepository,
+    val messageHistoryRepository: MessageHistoryRepository,
     val chatroomRepository: ChatroomRepository
 ) {
     @PostMapping(
@@ -127,12 +126,12 @@ class ChatsController constructor(
     )
     @ResponseBody
     @Throws(Exception::class)
-    fun listStudentMessageHistory(@RequestBody studentEmail: String): ResponseEntity<Any> {
+    fun listStudentMessageHistory(@RequestBody messageHistoryRequest: MessageHistoryRequest): ResponseEntity<Any> {
         var status: HttpStatus = HttpStatus.OK;
 
-        var messageHistory: List<Message>? = null;
+        var messageHistory: List<MessageHistory>? = null;
         val messageHistoryThread = Thread {
-            messageHistory = messageRepository.getStudentHistoryMessages(studentEmail);
+            messageHistory = messageHistoryRepository.getStudentHistoryMessages(messageHistoryRequest.studentEmail);
         }
 
         messageHistoryThread.start();

@@ -12,10 +12,4 @@ interface MessageRepository : JpaRepository<Message, Int> {
         nativeQuery = true
     )
     fun getChatroomMessages(@Param("roomID") roomID: Int): List<Message>;
-
-    @Query(
-        value = "SELECT * FROM message WHERE student_email = :studentEmail",
-        nativeQuery = true
-    )
-    fun getStudentHistoryMessages(@Param("studentEmail") studentEmail: String): List<Message>;
 }
