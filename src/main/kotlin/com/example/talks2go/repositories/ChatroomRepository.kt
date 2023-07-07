@@ -9,7 +9,7 @@ import java.util.*
 interface ChatroomRepository : JpaRepository<Chatroom, Int> {
 
     @Query(
-        value = "SELECT room_id FROM chatroom WHERE first_student_email = :firstStudentEmail AND second_student_email = :secondStudentEmail",
+        value = "SELECT room_id FROM chatroom WHERE first_student_email IN (:firstStudentEmail, :secondStudentEmail) AND second_student_email IN (:firstStudentEmail, :secondStudentEmail)",
         nativeQuery = true
     )
     fun getChatroomID(
